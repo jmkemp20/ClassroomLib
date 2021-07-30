@@ -267,8 +267,7 @@ class CheckOutPage2(tk.Frame):
         answer = messagebox.askyesno(title="Confirmation", message="Are you sure you want to check out?")
         if answer:
             print("Checking out: " + isbn + " for " + self.controller.studentname)
-            # TODO Need to add checked out book to student and book_list
-            # TODO Need to decrement
+            # TODO This all might change depending on input from scanner device
 
             with open('students.json', 'r') as student_data:
                 data = json.load(student_data)
