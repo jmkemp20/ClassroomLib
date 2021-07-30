@@ -1,17 +1,19 @@
 try:
-    import tkinter as tk                # python 3
+    import tkinter as tk  # python 3
     from tkinter import font as tkfont, END, messagebox  # python 3
-    from tkinter import *
 except ImportError:
-    import Tkinter as tk     # python 2
+    import Tkinter as tk  # python 2
     import tkFont as tkfont  # python 2
 import json
+from BookParser import *
 
 
 class SampleApp(tk.Tk):
 
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
+        self.geometry("800x480")
+        self.resizable(False, False)
 
         self.title("Classroom Card Catalogue")
         self.title_font = tkfont.Font(family='Helvetica', size=20, weight="bold", slant="italic")
@@ -72,14 +74,14 @@ class StartPage(tk.Frame):
         tk.Frame.__init__(self, parent)
         self.controller = controller
         label = tk.Label(self, text="Classroom Card Catalogue", font=controller.title_font)
-        label.grid(row=0, column=0, columnspan=2, padx=15, pady=20)
+        label.pack(side="top", fill="x", pady=10)
 
-        button1 = tk.Button(self, text="Check In", padx=60, pady=80, font=controller.text_font,
+        button1 = tk.Button(self, text="Check In", font=controller.text_font,
                             command=lambda: controller.show_frame("CheckInPage"))
-        button2 = tk.Button(self, text="Check Out", padx=50, pady=80, font=controller.text_font,
+        button2 = tk.Button(self, text="Check Out", font=controller.text_font,
                             command=lambda: controller.show_frame("CheckOutPage"))
-        button1.grid(row=1, column=0, padx=5, pady=10)
-        button2.grid(row=1, column=1, padx=5, pady=10)
+        button1.pack(side="left", fill="both", expand=True)
+        button2.pack(side="right", fill="both", expand=True)
 
 
 class CheckInPage(tk.Frame):
@@ -91,11 +93,11 @@ class CheckInPage(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
 
         return_button = tk.Button(self, text="Return to Main Menu",
-                           command=lambda: controller.show_frame("StartPage"))
+                                  command=lambda: controller.show_frame("StartPage"))
         return_button.pack(side="bottom", fill="x")
 
-        checkin_button = tk.Button(self, text="Select", pady=10,
-                                  command=lambda: self.check_in())
+        checkin_button = tk.Button(self, text="Select", pady=10, font=self.controller.text_font,
+                                   command=lambda: self.check_in())
         checkin_button.pack(side="bottom", fill="x")
 
         scrollbar = tk.Scrollbar(self)
@@ -104,13 +106,13 @@ class CheckInPage(tk.Frame):
         self.nameslist = tk.Listbox(self, yscrollcommand=scrollbar.set, font=controller.text_font)
         for line in controller.studentdata["students"]:
             self.nameslist.insert(END, str(line["name"]))
-        self.nameslist.pack(padx=5, pady=5, fill="both")
+        self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
         scrollbar.config(command=self.nameslist.yview)
 
     def check_in(self):
-        if self.nameslist.get(ANCHOR) == "":
+        if self.nameslist.get(tk.ANCHOR) == "":
             return
-        self.controller.studentname = self.nameslist.get(ANCHOR)
+        self.controller.studentname = self.nameslist.get(tk.ANCHOR)
         self.controller.show_frame("CheckInPage2")
         CheckInPage2.render(self.controller.get_frame("CheckInPage2"))
 
@@ -133,19 +135,20 @@ class CheckInPage2(tk.Frame):
         self.label = tk.Label(self, text="Check In - " + self.controller.studentname, font=self.controller.title_font)
         self.label.pack(side="top", fill="x", pady=10)
 
-        self.checkin_button = tk.Button(self, text="Check In", pady=10,
-                                   command=lambda: self.check_in())
+        self.checkin_button = tk.Button(self, text="Check In", pady=10, font=self.controller.text_font,
+                                        command=lambda: self.check_in())
         self.checkin_button.pack(side="bottom", fill="x")
 
         self.scrollbar = tk.Scrollbar(self)
         self.scrollbar.pack(side="right", fill="y")
 
-        self.student = next((x for x in self.controller.studentdata["students"] if x["name"] == self.controller.studentname), None)
+        self.student = next(
+            (x for x in self.controller.studentdata["students"] if x["name"] == self.controller.studentname), None)
 
         self.booklist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=self.controller.text_font)
         for line in self.student["book_list"]:
-            self.booklist.insert(END, str(line["book_title"]))
-        self.booklist.pack(padx=5, pady=5, fill="both")
+            self.booklist.insert(END, str(line["title"]))
+        self.booklist.pack(padx=5, pady=5, fill="both", expand=True)
         self.scrollbar.config(command=self.booklist.yview)
 
     def go_back(self):
@@ -155,10 +158,10 @@ class CheckInPage2(tk.Frame):
         self.booklist.destroy()
 
     def check_in(self):
-        if self.booklist.get(ANCHOR) != "":
+        if self.booklist.get(tk.ANCHOR) != "":
             answer = messagebox.askyesno(title="Confirmation", message="Are you sure you want to check in?")
             if answer:
-                print("Checking in: " + self.booklist.get(ANCHOR))
+                print("Checking in: " + self.booklist.get(tk.ANCHOR))
                 with open('students.json', 'r') as student_data:
                     data = json.load(student_data)
 
@@ -166,7 +169,7 @@ class CheckInPage2(tk.Frame):
                     (x for x in data["students"] if x["name"] == self.controller.studentname),
                     None)
                 for books in range(len(student["book_list"])):
-                    if student["book_list"][books]["book_title"] == self.booklist.get(ANCHOR):
+                    if student["book_list"][books]["title"] == self.booklist.get(tk.ANCHOR):
                         del student["book_list"][books]
                         break
 
@@ -194,8 +197,8 @@ class CheckOutPage(tk.Frame):
                            command=lambda: controller.show_frame("StartPage"))
         button.pack(side="bottom", fill="x")
 
-        checkout_button = tk.Button(self, text="Select", pady=10,
-                                   command=lambda: self.check_out())
+        checkout_button = tk.Button(self, text="Select", pady=10, font=self.controller.text_font,
+                                    command=lambda: self.check_out())
         checkout_button.pack(side="bottom", fill="x")
 
         scrollbar = tk.Scrollbar(self)
@@ -203,14 +206,14 @@ class CheckOutPage(tk.Frame):
 
         self.nameslist = tk.Listbox(self, yscrollcommand=scrollbar.set, font=controller.text_font)
         for line in controller.studentdata["students"]:
-            self.nameslist.insert(END, str(line["name"]))
-        self.nameslist.pack(padx=5, pady=5, fill="both")
+            self.nameslist.insert(tk.END, str(line["name"]))
+        self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
         scrollbar.config(command=self.nameslist.yview)
 
     def check_out(self):
-        if self.nameslist.get(ANCHOR) == "":
+        if self.nameslist.get(tk.ANCHOR) == "":
             return
-        self.controller.studentname = self.nameslist.get(ANCHOR)
+        self.controller.studentname = self.nameslist.get(tk.ANCHOR)
         self.controller.show_frame("CheckOutPage2")
         CheckOutPage2.render(self.controller.get_frame("CheckOutPage2"))
 
@@ -236,15 +239,59 @@ class CheckOutPage2(tk.Frame):
         self.text_label = tk.Label(self, text="Scan Barcode Now:", font=self.controller.text_font)
         self.text_label.pack(side="top", fill="x", pady=20)
 
-        self.isbn = tk.Entry(self)
+        self.isbntext = tk.StringVar(self, value="")
+
+        self.isbn = tk.Entry(self, textvariable=self.isbntext)
         self.isbn.pack(padx=10, pady=10)
         self.isbn.focus()
 
-        self.checkout_button = tk.Button(self, text="Check Out", pady=50, command=lambda: self.checkout())
+        self.checkout_button = tk.Button(self, text="Check Out", pady=50, font=self.controller.text_font, command=lambda: self.checkout())
         self.checkout_button.pack(side="bottom", fill="x")
 
     def checkout(self):
-        return
+        #: TODO Regular expression for accepting valid ISBN or Input
+        #: Do not know what the actual input of the scanner device will be
+        bp.print_rows()
+        isbn = self.isbn.get()
+
+        if isbn == "":
+            print("Nothing in ISBN Field")
+            return
+        elif len(isbn) != 10:
+            print("ISBN not of length 10")
+            self.isbntext.set("")
+            return
+        if not bp.valid_isbn(isbn):
+            print("not valid isbn")
+            return
+        answer = messagebox.askyesno(title="Confirmation", message="Are you sure you want to check out?")
+        if answer:
+            print("Checking out: " + isbn + " for " + self.controller.studentname)
+            # TODO Need to add checked out book to student and book_list
+            # TODO Need to decrement
+
+            with open('students.json', 'r') as student_data:
+                data = json.load(student_data)
+
+            student = next(
+                (x for x in data["students"] if x["name"] == self.controller.studentname),
+                None)
+            temp_book = {
+                "title": bp.get_title(isbn),
+                "author": bp.get_author(isbn),
+                "ISBN10": isbn
+            }
+            print(student["book_list"])
+            book_list = student["book_list"]
+            book_list.append(temp_book)
+
+            student["book_list"] = book_list
+
+            with open('students.json', 'w') as student_data:
+                json.dump(data, student_data)
+
+            self.controller.refresh_json()
+            self.go_back()
 
     def go_back(self):
         self.isbn.destroy()
@@ -254,5 +301,8 @@ class CheckOutPage2(tk.Frame):
 
 
 if __name__ == "__main__":
+    bp = BookParser("books.csv")
+    #bp.print_fields()
+    #bp.print_rows()
     app = SampleApp()
     app.mainloop()
