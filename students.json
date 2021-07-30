@@ -1,0 +1,103 @@
+{
+  "students": [
+    {
+      "name": "Joshua Kemp",
+      "book_list": [
+        {
+          "book_title": "Of Mice and Men",
+          "ISBN": "123456789"
+        },
+        {
+          "book_title": "Where the Wild Things Are",
+          "ISBN": "987654321"
+        }
+      ]
+    },
+    {
+      "name": "Megan Agnes",
+      "book_list": [
+        {
+          "book_title": "To Each Their Own",
+          "ISBN": "021324356"
+        },
+        {
+          "book_title": "How to Become a Millionaire",
+          "ISBN": "978675643"
+        }
+      ]
+    },
+    {
+      "name": "Stanley Yelnats",
+      "book_list": [
+        {
+          "book_title": "How to Eat Fried Worms",
+          "ISBN": "172839794"
+        },
+        {
+          "book_title": "Rich Dad, Poor Dad",
+          "ISBN": "392817134"
+        }
+      ]
+    },
+    {
+      "name": "Jack Stan",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Sydney Arias",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Aidan Bevan",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Shanaya Mill",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Jose Pearce",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Otis Crawford",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Xavier Franco",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Abdullah Price",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Haider Dillon",
+      "book_list": [
+
+      ]
+    },
+    {
+      "name": "Zahra Read",
+      "book_list": [
+
+      ]
+    }
+  ]
+}
