@@ -50,14 +50,26 @@ class BookParser:
             if len(self.books[row][self.isbn13_row]) != 13:
                 isbn10 = self.books[row][self.isbn10_row]
                 isbn10 = isbn10[:len(isbn10) - 1]   # Removes check digit
-                isbn13 = "978" + isbn10
+                isbn13 = self.to_isbn13(isbn10)
+                self.books[row][self.isbn13_row] = isbn13
 
-                sum = 0
-                for i in range(len(isbn13)):
-                    digit = int(isbn13[i])
-                    sum += digit * (3 if self.is_odd(i) else 1)
-                checkdigit = (10 - sum % 10) % 10
-                self.books[row][self.isbn13_row] = isbn13 + str(checkdigit)
+    def to_isbn13(self, isbn10):
+        isbn13 = "978" + isbn10
+        sum = 0
+        for i in range(len(isbn13)):
+            digit = int(isbn13[i])
+            sum += digit * (3 if self.is_odd(i) else 1)
+        checkdigit = (10 - sum % 10) % 10
+        return isbn13 + str(checkdigit)
+
+    def to_isbn10(self, isbn13):
+        isbn10 = isbn13[3:len(isbn13) - 1]  # remove first 3 and last digit
+        total = 0
+        for i in range(len(isbn10)):
+            digit = int(isbn10[i])
+            total += (i+1) * digit
+        d10 = total % 11
+        return isbn10 + str(d10)
 
     def is_odd(self, num):
         return num % 2 != 0
