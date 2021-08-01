@@ -103,9 +103,10 @@ class CheckInPage(tk.Frame):
         scrollbar = tk.Scrollbar(self)
         scrollbar.pack(side="right", fill="y")
 
+        # TODO Move this so it updates everytime the frame is brought forward
         self.nameslist = tk.Listbox(self, yscrollcommand=scrollbar.set, font=controller.text_font)
         for line in controller.studentdata["students"]:
-            self.nameslist.insert(END, str(line["name"]))
+            self.nameslist.insert(END, str(line["name"]) + " (" + str(len(line["book_list"])) + ")")
         self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
         scrollbar.config(command=self.nameslist.yview)
 
@@ -146,8 +147,9 @@ class CheckInPage2(tk.Frame):
             (x for x in self.controller.studentdata["students"] if x["name"] == self.controller.studentname), None)
 
         self.booklist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=self.controller.text_font)
-        for line in self.student["book_list"]:
-            self.booklist.insert(END, str(line["title"]))
+        for isbn in self.student["book_list"]:
+            temp_string = "\"" + bp.get_title(isbn) + "\" - " + bp.get_author(isbn)
+            self.booklist.insert(END, temp_string)
         self.booklist.pack(padx=5, pady=5, fill="both", expand=True)
         self.scrollbar.config(command=self.booklist.yview)
 
@@ -251,18 +253,18 @@ class CheckOutPage2(tk.Frame):
     def checkout(self):
         #: TODO Regular expression for accepting valid ISBN or Input
         #: Do not know what the actual input of the scanner device will be
-        bp.print_rows()
         isbn = self.isbn.get()
-
         if isbn == "":
-            print("Nothing in ISBN Field")
+            tk.messagebox.showerror(title="No Input", message="Please scan the barcode on the back of the book")
             return
-        elif len(isbn) != 10:
-            print("ISBN not of length 10")
+        elif len(isbn) != 10 and len(isbn) != 13:
             self.isbntext.set("")
+            tk.messagebox.showerror(title="Invalid Scan", message="Invalid Scan - Please scan again")
             return
-        if not bp.valid_isbn(isbn):
-            print("not valid isbn")
+        if not bp.valid_isbn(isbn): # : Checks to see if ISBN is in library
+            # TODO Maybe add functionality of adding a book to the library (using set password) - uses api
+            self.isbntext.set("")
+            tk.messagebox.showerror(title="Invalid ISBN", message="This Book is not part of the library")
             return
         answer = messagebox.askyesno(title="Confirmation", message="Are you sure you want to check out?")
         if answer:
@@ -275,12 +277,7 @@ class CheckOutPage2(tk.Frame):
             student = next(
                 (x for x in data["students"] if x["name"] == self.controller.studentname),
                 None)
-            temp_book = {
-                "title": bp.get_title(isbn),
-                "author": bp.get_author(isbn),
-                "ISBN10": isbn
-            }
-            print(student["book_list"])
+            temp_book = isbn
             book_list = student["book_list"]
             book_list.append(temp_book)
 
@@ -301,7 +298,7 @@ class CheckOutPage2(tk.Frame):
 
 if __name__ == "__main__":
     bp = BookParser("books.csv")
-    #bp.print_fields()
-    #bp.print_rows()
+    bp.print_fields()
+    bp.print_rows()
     app = SampleApp()
     app.mainloop()
