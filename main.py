@@ -6,7 +6,7 @@ except ImportError:
     import tkFont as tkfont  # python 2
 import json
 from BookParser import *
-
+import re
 
 class SampleApp(tk.Tk):
 
@@ -77,12 +77,15 @@ class StartPage(tk.Frame):
         label.pack(side="top", fill="x", pady=10)
 
         button1 = tk.Button(self, text="Check In", font=controller.text_font,
-                            command=lambda: controller.show_frame("CheckInPage"))
+                            command=lambda: self.checkinpage())
         button2 = tk.Button(self, text="Check Out", font=controller.text_font,
                             command=lambda: controller.show_frame("CheckOutPage"))
         button1.pack(side="left", fill="both", expand=True)
         button2.pack(side="right", fill="both", expand=True)
 
+    def checkinpage(self):
+        self.controller.show_frame("CheckInPage")
+        CheckInPage.render(self.controller.get_frame("CheckInPage"))
 
 class CheckInPage(tk.Frame):
 
@@ -100,20 +103,30 @@ class CheckInPage(tk.Frame):
                                    command=lambda: self.check_in())
         checkin_button.pack(side="bottom", fill="x")
 
-        scrollbar = tk.Scrollbar(self)
-        scrollbar.pack(side="right", fill="y")
+        self.scrollbar = tk.Scrollbar(self)
+        self.scrollbar.pack(side="right", fill="y")
 
         # TODO Move this so it updates everytime the frame is brought forward
-        self.nameslist = tk.Listbox(self, yscrollcommand=scrollbar.set, font=controller.text_font)
+        self.nameslist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=controller.text_font)
         for line in controller.studentdata["students"]:
+            self.nameslist.insert(END, str(line["name"]))
+        self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
+        self.scrollbar.config(command=self.nameslist.yview)
+
+    def render(self):
+        self.nameslist.destroy()
+        self.nameslist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=self.controller.text_font)
+        for line in self.controller.studentdata["students"]:
             self.nameslist.insert(END, str(line["name"]) + " (" + str(len(line["book_list"])) + ")")
         self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
-        scrollbar.config(command=self.nameslist.yview)
+        self.scrollbar.config(command=self.nameslist.yview)
 
     def check_in(self):
         if self.nameslist.get(tk.ANCHOR) == "":
             return
-        self.controller.studentname = self.nameslist.get(tk.ANCHOR)
+        temp_string = str(self.nameslist.get(tk.ANCHOR)).split()
+        full_name = temp_string[0] + " " + temp_string[1]
+        self.controller.studentname = full_name
         self.controller.show_frame("CheckInPage2")
         CheckInPage2.render(self.controller.get_frame("CheckInPage2"))
 
@@ -147,8 +160,8 @@ class CheckInPage2(tk.Frame):
             (x for x in self.controller.studentdata["students"] if x["name"] == self.controller.studentname), None)
 
         self.booklist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=self.controller.text_font)
-        for isbn in self.student["book_list"]:
-            temp_string = "\"" + bp.get_title(isbn) + "\" - " + bp.get_author(isbn)
+        for line in self.student["book_list"]:
+            temp_string = "\"" + line["title"] + "\" - " + line["author"]
             self.booklist.insert(END, temp_string)
         self.booklist.pack(padx=5, pady=5, fill="both", expand=True)
         self.scrollbar.config(command=self.booklist.yview)
@@ -171,7 +184,8 @@ class CheckInPage2(tk.Frame):
                     (x for x in data["students"] if x["name"] == self.controller.studentname),
                     None)
                 for books in range(len(student["book_list"])):
-                    if student["book_list"][books]["title"] == self.booklist.get(tk.ANCHOR):
+                    book_title = re.findall('"([^"]*)"', self.booklist.get(tk.ANCHOR))
+                    if student["book_list"][books]["title"] == book_title[0]:
                         del student["book_list"][books]
                         break
 
@@ -277,7 +291,11 @@ class CheckOutPage2(tk.Frame):
             student = next(
                 (x for x in data["students"] if x["name"] == self.controller.studentname),
                 None)
-            temp_book = isbn
+            temp_book = {
+                "title": bp.get_title(isbn),
+                "author": bp.get_author(isbn),
+                "ISBN": isbn
+            }
             book_list = student["book_list"]
             book_list.append(temp_book)
 
