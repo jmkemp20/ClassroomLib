@@ -17,6 +17,7 @@ class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.geometry("800x480")
+        self.attributes('-fullscreen', True)
         self.resizable(False, False)
 
         self.title("Classroom Card Catalogue")
