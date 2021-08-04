@@ -58,7 +58,7 @@ class SampleApp(tk.Tk):
 
     def mouse_movement(self, posn):
         if 5 < self.winfo_pointerx() < 750:
-            if 90 < self.winfo_pointery() > 400:
+            if 90 < self.winfo_pointery() < 400:
                 if self.listbox is not None:
                     if self.oldY < self.winfo_pointery():
                         self.listbox.yview_scroll(-1, 'units')
