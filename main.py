@@ -20,6 +20,10 @@ class SampleApp(tk.Tk):
         self.attributes('-fullscreen', True)
         self.resizable(False, False)
 
+        self.bind("<B1-Motion>", self.mouse_movement)
+        self.oldY = 0
+        self.listbox = None
+
         self.title("Classroom Card Catalogue")
         self.title_font = tkfont.Font(family='Helvetica', size=20, weight="bold", slant="italic")
         self.text_font = tkfont.Font(family='Helvetica', size=14, weight="bold")
@@ -55,8 +59,19 @@ class SampleApp(tk.Tk):
 
         self.show_frame("StartPage")
 
+    def mouse_movement(self, posn):
+        print(self.listbox)
+        if self.listbox is not None:
+            if self.oldY < self.winfo_pointery():
+                self.listbox.yview_scroll(-1, 'units')
+            else:
+                self.listbox.yview_scroll(1, 'units')
+            self.oldY = self.winfo_pointery()
+
+
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
+        # self.listbox = None
         frame = self.frames[page_name]
         frame.tkraise()
 
@@ -84,13 +99,18 @@ class StartPage(tk.Frame):
         button1 = tk.Button(self, text="Check In", font=controller.text_font,
                             command=lambda: self.checkinpage())
         button2 = tk.Button(self, text="Check Out", font=controller.text_font,
-                            command=lambda: controller.show_frame("CheckOutPage"))
+                            command=lambda: self.checkoutpage())
         button1.pack(side="left", fill="both", expand=True)
         button2.pack(side="right", fill="both", expand=True)
 
     def checkinpage(self):
         self.controller.show_frame("CheckInPage")
         CheckInPage.render(self.controller.get_frame("CheckInPage"))
+
+    def checkoutpage(self):
+        self.controller.show_frame("CheckOutPage")
+        CheckOutPage.render(self.controller.get_frame("CheckOutPage"))
+
 
 class CheckInPage(tk.Frame):
 
@@ -120,11 +140,14 @@ class CheckInPage(tk.Frame):
 
     def render(self):
         self.nameslist.destroy()
+        self.controller.listbox = None
         self.nameslist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=self.controller.text_font)
         for line in self.controller.studentdata["students"]:
             self.nameslist.insert(END, str(line["name"]) + " (" + str(len(line["book_list"])) + ")")
         self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
         self.scrollbar.config(command=self.nameslist.yview)
+
+        self.controller.listbox = self.nameslist
 
     def check_in(self):
         if self.nameslist.get(tk.ANCHOR) == "":
@@ -151,6 +174,7 @@ class CheckInPage2(tk.Frame):
     def render(self):
         print("CheckInPage2: " + self.controller.studentname)
         self.label.destroy()
+        self.controller.listbox = None
         self.label = tk.Label(self, text="Check In - " + self.controller.studentname, font=self.controller.title_font)
         self.label.pack(side="top", fill="x", pady=10)
 
@@ -170,6 +194,8 @@ class CheckInPage2(tk.Frame):
             self.booklist.insert(END, temp_string)
         self.booklist.pack(padx=5, pady=5, fill="both", expand=True)
         self.scrollbar.config(command=self.booklist.yview)
+
+        self.controller.listbox = self.booklist
 
     def go_back(self):
         self.controller.show_frame("StartPage")
@@ -222,14 +248,28 @@ class CheckOutPage(tk.Frame):
                                     command=lambda: self.check_out())
         checkout_button.pack(side="bottom", fill="x")
 
-        scrollbar = tk.Scrollbar(self)
-        scrollbar.pack(side="right", fill="y")
+        self.scrollbar = tk.Scrollbar(self)
+        self.scrollbar.pack(side="right", fill="y")
 
-        self.nameslist = tk.Listbox(self, yscrollcommand=scrollbar.set, font=controller.text_font)
+        self.nameslist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=controller.text_font)
         for line in controller.studentdata["students"]:
             self.nameslist.insert(tk.END, str(line["name"]))
         self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
-        scrollbar.config(command=self.nameslist.yview)
+        self.scrollbar.config(command=self.nameslist.yview)
+
+        self.controller.listbox = self.nameslist
+
+    def render(self):
+        self.nameslist.destroy()
+        self.controller.listbox = None
+        self.nameslist = tk.Listbox(self, yscrollcommand=self.scrollbar.set, font=self.controller.text_font)
+        for line in self.controller.studentdata["students"]:
+            self.nameslist.insert(END, str(line["name"]))
+        self.nameslist.pack(padx=5, pady=5, fill="both", expand=True)
+        self.scrollbar.config(command=self.nameslist.yview)
+
+        self.controller.listbox = self.nameslist
+
 
     def check_out(self):
         if self.nameslist.get(tk.ANCHOR) == "":
