@@ -63,15 +63,16 @@ class SampleApp(tk.Tk):
         if 5 < self.winfo_pointerx() < 750:
             if 90 < self.winfo_pointery() < 400:
                 if self.listbox is not None and self.touching:
-                    if abs(self.oldY - self.winfo_pointery()) < 10:
-                        if self.oldY < self.winfo_pointery():
-                            self.listbox.yview_scroll(-1, 'units')
-                        elif self.oldY > self.winfo_pointery():
-                            self.listbox.yview_scroll(1, 'units')
+                    if self.oldY == -1:
                         self.oldY = self.winfo_pointery()
+                    if self.oldY < self.winfo_pointery():
+                        self.listbox.yview_scroll(-1, 'units')
+                    elif self.oldY > self.winfo_pointery():
+                        self.listbox.yview_scroll(1, 'units')
+                    self.oldY = self.winfo_pointery()
 
     def button_press(self, posn):
-        self.oldY = self.winfo_pointery()
+        self.oldY = -1
         self.touching = True
 
     def button_release(self, posn):
