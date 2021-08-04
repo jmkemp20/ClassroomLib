@@ -57,15 +57,16 @@ class SampleApp(tk.Tk):
         self.show_frame("StartPage")
 
     def mouse_movement(self, posn):
+        print(str(self.winfo_pointerx()) + " " + str(self.winfo_pointery()))
         if 5 < self.winfo_pointerx() < 750:
             if 90 < self.winfo_pointery() < 400:
                 if self.listbox is not None:
                     if self.oldY < self.winfo_pointery():
                         self.listbox.yview_scroll(-1, 'units')
-                    else:
+                        print("down")
+                    elif self.oldY > self.winfo_pointery():
                         self.listbox.yview_scroll(1, 'units')
                     self.oldY = self.winfo_pointery()
-
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
@@ -91,8 +92,16 @@ class StartPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.controller = controller
-        label = tk.Label(self, text="Classroom Card Catalogue", font=controller.title_font)
-        label.pack(side="top", fill="x", pady=10)
+
+        f = tk.Frame(self)
+        f.pack(side="top", fill="x", pady=10)
+
+        label = tk.Label(f, text="Classroom Card Catalogue", font=controller.title_font)
+        label.pack(side="left", padx=200, fill="x")
+        # label.pack(side="top", fill="x", pady=10)
+
+        exit_button = tk.Button(f, text="X", font=controller.text_font, command=lambda: exit(1))
+        exit_button.pack(side="right")
 
         button1 = tk.Button(self, text="Check In", font=controller.text_font,
                             command=lambda: self.checkinpage())
