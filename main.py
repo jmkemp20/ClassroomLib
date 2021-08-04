@@ -1,5 +1,3 @@
-import ISBNParser
-
 try:
     import tkinter as tk  # python 3
     from tkinter import font as tkfont, END, messagebox  # python 3
@@ -9,7 +7,6 @@ except ImportError:
 import json
 from BookParser import *
 import re
-from ISBNParser import *
 
 
 class SampleApp(tk.Tk):
@@ -60,13 +57,14 @@ class SampleApp(tk.Tk):
         self.show_frame("StartPage")
 
     def mouse_movement(self, posn):
-        print(self.listbox)
-        if self.listbox is not None:
-            if self.oldY < self.winfo_pointery():
-                self.listbox.yview_scroll(-1, 'units')
-            else:
-                self.listbox.yview_scroll(1, 'units')
-            self.oldY = self.winfo_pointery()
+        if 5 < self.winfo_pointerx() < 750:
+            if 90 < self.winfo_pointery() > 400:
+                if self.listbox is not None:
+                    if self.oldY < self.winfo_pointery():
+                        self.listbox.yview_scroll(-1, 'units')
+                    else:
+                        self.listbox.yview_scroll(1, 'units')
+                    self.oldY = self.winfo_pointery()
 
 
     def show_frame(self, page_name):
