@@ -70,6 +70,7 @@ class SampleApp(tk.Tk):
                     self.oldY = self.winfo_pointery()
 
     def button_press(self, posn):
+        self.oldY = self.winfo_pointery()
         self.touching = True
 
     def button_release(self, posn):
