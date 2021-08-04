@@ -17,9 +17,12 @@ class SampleApp(tk.Tk):
         self.attributes('-fullscreen', True)
         self.resizable(False, False)
 
+        self.bind("<Button>", self.button_press)
+        self.bind("<ButtonRelease>", self.button_release)
         self.bind("<B1-Motion>", self.mouse_movement)
         self.oldY = 0
         self.listbox = None
+        self.touching = False
 
         self.title("Classroom Card Catalogue")
         self.title_font = tkfont.Font(family='Helvetica', size=20, weight="bold", slant="italic")
@@ -57,16 +60,20 @@ class SampleApp(tk.Tk):
         self.show_frame("StartPage")
 
     def mouse_movement(self, posn):
-        print(str(self.winfo_pointerx()) + " " + str(self.winfo_pointery()))
         if 5 < self.winfo_pointerx() < 750:
             if 90 < self.winfo_pointery() < 400:
-                if self.listbox is not None:
+                if self.listbox is not None and self.touching:
                     if self.oldY < self.winfo_pointery():
                         self.listbox.yview_scroll(-1, 'units')
-                        print("down")
                     elif self.oldY > self.winfo_pointery():
                         self.listbox.yview_scroll(1, 'units')
                     self.oldY = self.winfo_pointery()
+
+    def button_press(self, posn):
+        self.touching = True
+
+    def button_release(self, posn):
+        self.touching = False
 
     def show_frame(self, page_name):
         '''Show a frame for the given page name'''
