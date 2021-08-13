@@ -5,8 +5,10 @@ except ImportError:
     import Tkinter as tk  # python 2
     import tkFont as tkfont  # python 2
 import json
-from BookParser import *
 import re
+import ISBNParser
+from BookParserJSON import *
+from pymongo import MongoClient
 
 
 class SampleApp(tk.Tk):
@@ -14,7 +16,7 @@ class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.geometry("800x480")
-        self.attributes('-fullscreen', True)
+        # self.attributes('-fullscreen', True)
         self.resizable(False, False)
 
         self.bind("<Button>", self.button_press)
@@ -337,7 +339,7 @@ class CheckOutPage2(tk.Frame):
             self.isbntext.set("")
             tk.messagebox.showerror(title="Invalid Scan", message="Invalid Scan - Please scan again")
             return
-        if not bp.valid_isbn(isbn): # : Checks to see if ISBN is in library
+        if not bp.isbn_in_library(isbn):  # : Checks to see if ISBN is in library
             # TODO Maybe add functionality of adding a book to the library (using set password) - uses api
             self.isbntext.set("")
             tk.messagebox.showerror(title="Invalid ISBN", message="This Book is not part of the library")
@@ -377,8 +379,8 @@ class CheckOutPage2(tk.Frame):
 
 
 if __name__ == "__main__":
-    bp = BookParser("books.csv")
+    bp = BookParserJSON("fullLibrary.json")
     # bp.print_fields()
-    bp.print_rows()
+    # bp.print_rows()
     app = SampleApp()
     app.mainloop()

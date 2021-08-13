@@ -2,7 +2,7 @@ import csv
 import ISBNParser
 
 
-class BookParser:
+class BookParserCSV:
     def __init__(self, file_path):
         self.file_path = file_path
         self.fields = []
@@ -30,11 +30,11 @@ class BookParser:
         self.fixISBN10()
         self.fixISBN13()
 
-        # with open(file_path, 'w') as csv_file:
-        #     csv_writer = csv.writer(csv_file, delimiter=',')
-        #     csv_writer.writerow(self.fields)
-        #     for row in self.books:
-        #         csv_writer.writerow(row)
+        with open(file_path, 'w', newline='') as csv_file:
+            csv_writer = csv.writer(csv_file, delimiter=',')
+            csv_writer.writerow(self.fields)
+            for row in self.books:
+                csv_writer.writerow(row)
 
     def fixISBN10(self):
         for row in range(len(self.books)):

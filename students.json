@@ -7,127 +7,18 @@
           "title": "The Millionaire Next Door",
           "author": "Stanley",
           "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
-        },
-        {
-          "title": "The Millionaire Next Door",
-          "author": "Stanley",
-          "ISBN": "9781589795471"
         }
       ]
     },
     {
       "name": "Megan Agnes",
-      "book_list": []
+      "book_list": [
+        {
+          "title": "Harold Snipperpot\u2019s Best Disaster Ever",
+          "author": "",
+          "ISBN": "9780500651872"
+        }
+      ]
     },
     {
       "name": "Stanley Yelnats",
@@ -141,7 +32,13 @@
     },
     {
       "name": "Jack Stan",
-      "book_list": []
+      "book_list": [
+        {
+          "title": "Ninja Red Riding Hood",
+          "author": "Corey Rosen Schwartz",
+          "ISBN": "0545888786"
+        }
+      ]
     },
     {
       "name": "Sydney Arias",
